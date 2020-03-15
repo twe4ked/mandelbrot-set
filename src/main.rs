@@ -4,7 +4,7 @@ use num_complex::Complex;
 const WIDTH: usize = 1400;
 const HEIGHT: usize = 800;
 const EPSILON: f64 = 0.0001;
-const MAX_ITERATIONS: u8 = 20;
+const MAX_ITERATIONS: u32 = 20;
 const MANDELBROT_RANGE: (f64, f64) = (-2.0, 2.0);
 
 fn main() {
@@ -14,7 +14,7 @@ fn main() {
     let mut y: f64 = MANDELBROT_RANGE.0;
     let mut c: Complex<f64>;
     let mut z: Complex<f64>;
-    let mut iterations;
+    let mut iterations: u32;
 
     while x <= MANDELBROT_RANGE.1 {
         while y <= MANDELBROT_RANGE.1 {
@@ -28,10 +28,11 @@ fn main() {
                 iterations += 1;
             }
 
-            let mut color: u32 = 0;
-            if iterations != MAX_ITERATIONS {
-                color = (50 + iterations * 10 % 255).into();
-            }
+            let color = if iterations != MAX_ITERATIONS {
+                50 + iterations * 10 % 255
+            } else {
+                0
+            };
 
             window_buffer.set_pixel(
                 scale(x, WIDTH as f64 - 1.0),
