@@ -1,5 +1,4 @@
-use mandelbrot_set::WindowBuffer;
-use num_complex::Complex;
+use mandelbrot_set::*;
 
 const WIDTH: usize = 1400;
 const HEIGHT: usize = 800;
@@ -10,42 +9,13 @@ const MANDELBROT_RANGE: (f64, f64) = (-2.0, 2.0);
 fn main() {
     let mut window_buffer = WindowBuffer::new(WIDTH, HEIGHT);
 
-    let mut x: f64 = MANDELBROT_RANGE.0;
-    let mut y: f64 = MANDELBROT_RANGE.0;
-    let mut c: Complex<f64>;
-    let mut z: Complex<f64>;
-    let mut iterations: u32;
-
-    while x <= MANDELBROT_RANGE.1 {
-        while y <= MANDELBROT_RANGE.1 {
-            iterations = 0;
-
-            c = Complex::new(x, y);
-            z = Complex::new(0.0, 0.0);
-
-            while z.norm() < MANDELBROT_RANGE.1 && iterations < MAX_ITERATIONS {
-                z = z * z + c;
-                iterations += 1;
-            }
-
-            let color = if iterations != MAX_ITERATIONS {
-                50 + iterations * 10 % 255
-            } else {
-                0
-            };
-
-            window_buffer.set_pixel(
-                scale(x, WIDTH as f64 - 1.0),
-                scale(y, HEIGHT as f64 - 1.0),
-                color,
-            );
-
-            y += EPSILON
-        }
-        y = MANDELBROT_RANGE.0;
-
-        x += EPSILON
-    }
+    generate(EPSILON, MAX_ITERATIONS, MANDELBROT_RANGE, |x, y, color| {
+        window_buffer.set_pixel(
+            scale(x, WIDTH as f64 - 1.0),
+            scale(y, HEIGHT as f64 - 1.0),
+            color,
+        );
+    });
 
     window_buffer.draw();
 }
