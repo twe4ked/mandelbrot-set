@@ -1,6 +1,5 @@
 mod buffer;
 
-pub use buffer::Buffer;
 use num_complex::Complex;
 
 pub struct MandelbrotSet {

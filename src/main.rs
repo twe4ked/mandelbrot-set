@@ -1,4 +1,5 @@
-use mandelbrot_set::*;
+use mandelbrot_set::buffer::Buffer;
+use mandelbrot_set::MandelbrotSet;
 
 const WIDTH: usize = 1400;
 const HEIGHT: usize = 800;
