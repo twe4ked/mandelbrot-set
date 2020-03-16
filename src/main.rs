@@ -10,10 +10,10 @@ const MAX_ITERATIONS: u32 = 20;
 const MANDELBROT_RANGE: (f64, f64) = (-2.0, 2.0);
 
 fn main() {
-    let mut window_buffer = WindowBuffer::new(WIDTH, HEIGHT);
+    let mut buffer = Buffer::new(WIDTH, HEIGHT);
 
     generate(EPSILON, MAX_ITERATIONS, MANDELBROT_RANGE, |x, y, color| {
-        window_buffer.set_pixel(
+        buffer.set_pixel(
             scale(x, WIDTH as f64 - 1.0),
             scale(y, HEIGHT as f64 - 1.0),
             color,
@@ -28,7 +28,7 @@ fn main() {
     encoder.set_color(png::ColorType::RGBA);
     encoder.set_depth(png::BitDepth::Eight);
     let mut writer = encoder.write_header().unwrap();
-    writer.write_image_data(window_buffer.buffer()).unwrap();
+    writer.write_image_data(buffer.buffer()).unwrap();
 }
 
 fn scale(input: f64, y2: f64) -> usize {
