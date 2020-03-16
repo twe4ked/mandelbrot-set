@@ -22,9 +22,9 @@ impl Buffer {
         // let alpha = color >> 24 & 0xff;
         let red = color >> 16 & 0xff;
         let green = color >> 8 & 0xff;
-        let blue = color >> 0 & 0xff;
+        let blue = color & 0xff;
 
-        self.buffer[l + 0] = red as u8;
+        self.buffer[l] = red as u8;
         self.buffer[l + 1] = green as u8;
         self.buffer[l + 2] = blue as u8;
         self.buffer[l + 3] = 255;

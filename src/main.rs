@@ -20,7 +20,7 @@ fn main() {
 
     let path = Path::new(r"out.png");
     let file = File::create(path).unwrap();
-    let ref mut w = BufWriter::new(file);
+    let w = BufWriter::new(file);
 
     let mut encoder = png::Encoder::new(w, WIDTH as u32, HEIGHT as u32);
     encoder.set_color(png::ColorType::RGBA);

@@ -20,7 +20,7 @@ impl Default for MandelbrotSet {
 }
 
 impl MandelbrotSet {
-    pub fn generate<F>(&self, mut f: F)
+    pub fn generate<F>(&self, mut callback: F)
     where
         F: FnMut(f64, f64, u32),
     {
@@ -48,7 +48,7 @@ impl MandelbrotSet {
                     0
                 };
 
-                f(x, y, color);
+                callback(x, y, color);
 
                 y += self.epsilon
             }
