@@ -1,4 +1,7 @@
 use mandelbrot_set::*;
+use std::fs::File;
+use std::io::BufWriter;
+use std::path::Path;
 
 const WIDTH: usize = 1400;
 const HEIGHT: usize = 800;
@@ -17,7 +20,15 @@ fn main() {
         );
     });
 
-    window_buffer.draw();
+    let path = Path::new(r"out.png");
+    let file = File::create(path).unwrap();
+    let ref mut w = BufWriter::new(file);
+
+    let mut encoder = png::Encoder::new(w, WIDTH as u32, HEIGHT as u32);
+    encoder.set_color(png::ColorType::RGBA);
+    encoder.set_depth(png::BitDepth::Eight);
+    let mut writer = encoder.write_header().unwrap();
+    writer.write_image_data(window_buffer.buffer()).unwrap();
 }
 
 fn scale(input: f64, y2: f64) -> usize {
