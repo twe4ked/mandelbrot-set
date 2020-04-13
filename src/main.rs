@@ -8,12 +8,8 @@ fn main() {
     let mut buffer = Buffer::new(WIDTH, HEIGHT);
 
     let mandelbrot_set = MandelbrotSet::default();
-    mandelbrot_set.generate(|x, y, color| {
-        buffer.set_pixel(
-            mandelbrot_set.scale(x, WIDTH as f64 - 1.0) as usize,
-            mandelbrot_set.scale(y, HEIGHT as f64 - 1.0) as usize,
-            color,
-        );
+    mandelbrot_set.generate(WIDTH, HEIGHT, |x, y, color| {
+        buffer.set_pixel(x, y, color);
     });
 
     write_png(&buffer.buffer());

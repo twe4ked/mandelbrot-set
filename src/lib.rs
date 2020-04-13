@@ -1,9 +1,6 @@
 pub mod buffer;
 
-use num_complex::Complex;
-
 pub struct MandelbrotSet {
-    epsilon: f64,
     max_iterations: u32,
     range: (f64, f64),
 }
@@ -11,56 +8,51 @@ pub struct MandelbrotSet {
 impl Default for MandelbrotSet {
     fn default() -> Self {
         Self {
-            epsilon: 0.0001,
-            max_iterations: 20,
+            max_iterations: 50,
             range: (-2.0, 2.0),
         }
     }
 }
 
 impl MandelbrotSet {
-    pub fn generate<F>(&self, mut callback: F)
+    pub fn generate<F>(&self, width: usize, height: usize, mut callback: F)
     where
-        F: FnMut(f64, f64, u32),
+        F: FnMut(usize, usize, u32),
     {
-        let mut x: f64 = self.range.0;
-        let mut y: f64 = self.range.0;
-        let mut c: Complex<f64>;
-        let mut z: Complex<f64>;
-        let mut iterations: u32;
+        let min_im = -1.2;
+        let max_im = min_im + (self.range.1 - self.range.0) * height as f64 / width as f64;
+        let re_factor = (self.range.1 - self.range.0) / (width - 1) as f64;
+        let im_factor = (max_im - min_im) / (height - 1) as f64;
 
-        while x <= self.range.1 {
-            while y <= self.range.1 {
-                iterations = 0;
+        for y in 0..height {
+            let c_im = max_im - y as f64 * im_factor;
 
-                c = Complex::new(x, y);
-                z = Complex::new(0.0, 0.0);
+            for x in 0..width {
+                let c_re = self.range.0 + x as f64 * re_factor;
+                let mut z_re = c_re;
+                let mut z_im = c_im;
 
-                while z.norm() < self.range.1 && iterations < self.max_iterations {
-                    z = z * z + c;
-                    iterations += 1;
+                let mut color = 0;
+                for iterations in 0..self.max_iterations {
+                    let z_re2 = z_re * z_re;
+                    let z_im2 = z_im * z_im;
+
+                    if iterations != self.max_iterations {
+                        color = 50 + iterations * 10 % 255;
+                    } else {
+                        color = 0;
+                    }
+
+                    if z_re2 + z_im2 > 4. {
+                        break;
+                    }
+
+                    z_im = 2. * z_re * z_im + c_im;
+                    z_re = z_re2 - z_im2 + c_re;
                 }
 
-                let color = if iterations != self.max_iterations {
-                    50 + iterations * 10 % 255
-                } else {
-                    0
-                };
-
-                callback(x, y, color);
-
-                y += self.epsilon
+                callback(x, y, color)
             }
-            y = self.range.0;
-
-            x += self.epsilon
         }
-    }
-
-    pub fn scale(&self, input: f64, y2: f64) -> f64 {
-        let x1: f64 = self.range.0;
-        let x2: f64 = self.range.1;
-        let y1: f64 = 0.0;
-        (((input - x1) * (y2 - y1)) / (x2 - x1)) + y1
     }
 }
