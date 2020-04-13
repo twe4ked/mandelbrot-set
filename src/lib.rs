@@ -1,4 +1,4 @@
-mod buffer;
+pub mod buffer;
 
 use num_complex::Complex;
 
